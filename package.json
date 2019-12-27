@@ -1,5 +1,5 @@
 {
-  "name": "react-native-video-controls",
+  "name": "react-native-video-player",
   "version": "1.0.0",
   "description": "React native video controls based on react-native-video",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ts-uliana/react-native-video-controls.git"
+    "url": "git+https://github.com/ts-uliana/react-native-video-player.git"
   },
   "author": "Tsuvulskaya Uliana",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ts-uliana/react-native-video-controls/issues"
+    "url": "https://github.com/ts-uliana/react-native-video-player/issues"
   },
-  "homepage": "https://github.com/ts-uliana/react-native-video-controls#readme",
+  "homepage": "https://github.com/ts-uliana/react-native-video-player#readme",
   "dependencies": {
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
