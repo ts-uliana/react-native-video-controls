@@ -1,0 +1,26 @@
+{
+  "name": "react-native-video-controls",
+  "version": "1.0.0",
+  "description": "React native video controls based on react-native-video",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ts-uliana/react-native-video-controls.git"
+  },
+  "author": "Tsuvulskaya Uliana",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ts-uliana/react-native-video-controls/issues"
+  },
+  "homepage": "https://github.com/ts-uliana/react-native-video-controls#readme",
+  "dependencies": {
+    "prop-types": "^15.7.2",
+    "react": "^16.12.0",
+    "react-native": "^0.61.5",
+    "react-native-vector-icons": "^6.6.0",
+    "react-native-video": "^5.0.2"
+  }
+}
