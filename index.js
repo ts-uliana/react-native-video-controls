@@ -8,7 +8,7 @@ export default class Video extends Component {
     render() {
         return (
             <View>
-                
+                <Text>test</Text>
             </View>
         );
     }

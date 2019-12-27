@@ -17,10 +17,10 @@
   },
   "homepage": "https://github.com/ts-uliana/react-native-video-player#readme",
   "dependencies": {
-    "prop-types": "^15.7.2",
-    "react": "^16.12.0",
-    "react-native": "^0.61.5",
-    "react-native-vector-icons": "^6.6.0",
-    "react-native-video": "^5.0.2"
+    "prop-types": "*",
+    "react": "*",
+    "react-native": "*",
+    "react-native-vector-icons": "*",
+    "react-native-video": ">4.0.0"
   }
 }
