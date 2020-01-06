@@ -23,7 +23,7 @@ export default class VideoPlayer extends Component {
             source: Video.propTypes.source.required,
             width: PropTypes.number,
             height: PropTypes.number,
-            styles: PropTypes.object,
+            style: PropTypes.object,
             loop: PropTypes.bool,
             onBack: PropTypes.func,
             isFullScreen: PropTypes.bool,
@@ -32,7 +32,7 @@ export default class VideoPlayer extends Component {
     }
 
     static defaultProps = {
-        styles: {},
+        style: {},
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height,
         loop: false,
@@ -130,9 +130,15 @@ export default class VideoPlayer extends Component {
             this.setState(
                 {
                     isPlaying: false,
-                    seekerProgress: 1,
+                    seekerProgress: 0,
                     currentTime: this.state.duration,
-                }, this.showControls(false),
+                },
+                () => {
+                    if (this.player.ref) {
+                        this.player.ref.seek(0);
+                    }
+                    this.showControls(false);
+                },
             );
         } else {
             this.setState(
@@ -438,7 +444,11 @@ export default class VideoPlayer extends Component {
                     <View style={styles.player.container}>
                         <Video
                             {...this.props}
-                            style={[styles.player.video, this.props.styles]}
+                            style={{
+                                ...styles.player.video,
+                                ...this.props.style,
+                                ...{width: this.props.width, height: this.props.height}
+                            }}
                             ref={(ref) => { this.player.ref = ref; }}
                             fullscreen={false}
                             fullscreenAutorotate={false}
@@ -494,13 +504,11 @@ const styles = {
         },
         video: {
             bottom: 0,
-            height: Dimensions.get('window').height,
             left: 0,
             overflow: 'hidden',
             position: 'absolute',
             right: 0,
             top: 0,
-            width: Dimensions.get('window').width,
         },
     }),
     controls: StyleSheet.create({
