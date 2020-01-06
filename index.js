@@ -66,9 +66,9 @@ export default class VideoPlayer extends Component {
         };
 
         this.player = {
-            controlTimeoutDelay: 3000,
+            controlTimeoutDelay: 5000,
             controlTimeout: null,
-            dobleTabTimeout: null,
+            doubleTabTimeout: null,
             ref: Video,
             lastTap: null,
             seekBarWidth: 0,
@@ -152,7 +152,7 @@ export default class VideoPlayer extends Component {
     }
 
     onPlayPause() {
-        this.showControls();
+        this.resetControlTimeout();
 
         let { seekerProgress } = this.state;
         if (this.state.seekerProgress === 1 && this.player.ref) {
@@ -167,6 +167,8 @@ export default class VideoPlayer extends Component {
     }
 
     onSeekGrant(e) {
+        this.resetControlTimeout();
+
         this.seekTouchStart = e.nativeEvent.pageX;
         this.seekProgressStart = this.state.seekerProgress;
         this.wasPlayingBeforeSeek = this.state.isPlaying;
@@ -177,11 +179,12 @@ export default class VideoPlayer extends Component {
     }
 
     onSeekRelease() {
+        this.resetControlTimeout();
+
         this.setState({
             seeking: false,
             isPlaying: this.wasPlayingBeforeSeek,
         });
-        this.showControls();
     }
 
     onSeek(e) {
@@ -365,7 +368,7 @@ export default class VideoPlayer extends Component {
                     styles.controls.bottomControlGroup,
                 ]}>
                     <TouchableOpacity
-                        style={[styles.controls.column]}
+                        style={[styles.controls.column, styles.controls.playPauseButton]}
                         onPress={() => this.onPlayPause()}>
                         <Icon name={this.state.isPlaying ? 'ios-pause' : 'ios-play'} size={24} color={'#ffff'}/>
                     </TouchableOpacity>
@@ -430,8 +433,8 @@ export default class VideoPlayer extends Component {
                             this.player.lastTap = now;
                         }
 
-                        clearTimeout(this.player.dobleTabTimeout);
-                        this.player.dobleTabTimeout = setTimeout(() => {
+                        clearTimeout(this.player.doubleTabTimeout);
+                        this.player.doubleTabTimeout = setTimeout(() => {
                             if ((now - this.player.lastTap) === 0) {
                                 if (this.state.isControlsVisible) {
                                     this.hideControls();
@@ -521,9 +524,10 @@ const styles = {
             alignItems: 'center',
             alignSelf: 'stretch',
             justifyContent: 'space-between',
-            marginBottom: 0,
+            marginBottom: 5,
             marginLeft: 12,
             marginRight: 12,
+            paddingLeft: 0,
         },
         center: {
             alignItems: 'center',
@@ -567,7 +571,7 @@ const styles = {
             backgroundColor: '#fff',
             borderRadius: 10,
             height: 15,
-            marginHorizontal: -3,
+            marginHorizontal: -4,
             transform: [{ scale: 0.8 }],
             width: 15,
             zIndex: 1,
@@ -576,6 +580,11 @@ const styles = {
             backgroundColor: '#fff',
             borderRadius: 10,
             height: 6,
+        },
+        playPauseButton: {
+            // backgroundColor: 'red',
+            paddingLeft: 12,
+            paddingRight: 5,
         },
         text: {
             backgroundColor: 'transparent',
