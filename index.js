@@ -13,6 +13,7 @@ import {
 import SafeAreaView from 'react-native-safe-area-view';
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
 import IconAntDesign from 'react-native-vector-icons/AntDesign';
+import Orientation from 'react-native-orientation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Video from 'react-native-video';
 
@@ -63,6 +64,8 @@ export default class VideoPlayer extends Component {
             showTimeRemaining: true,
             currentTime: 0,
             duration: 0,
+
+            orientation: 'PORTRAIT',
         };
 
         this.player = {
@@ -87,6 +90,27 @@ export default class VideoPlayer extends Component {
                 opacity: new Animated.Value(1),
             },
         };
+    }
+
+    componentWillMount() {
+        const orientation = Orientation.getInitialOrientation();
+        if (orientation !== this.state.orientation) {
+            this.setState({
+                orientation,
+            });
+        }
+
+        Orientation.addOrientationListener(this.orientationDidChange.bind(this));
+    }
+
+    componentWillUnmount() {
+        Orientation.removeOrientationListener(this.orientationDidChange.bind(this));
+    }
+
+    orientationDidChange(orientation) {
+        this.setState({
+            orientation,
+        });
     }
 
     onLoadStart() {
@@ -310,7 +334,7 @@ export default class VideoPlayer extends Component {
                         {
                             opacity: this.animations.topControl.opacity,
                             marginTop: this.animations.topControl.marginTop,
-                            paddingTop: insets.top,
+                            paddingTop: (this.state.orientation === 'PORTRAIT' ? insets.top : 10),
                         },
                     ]}>
                         <View style={[styles.controls.row, styles.controls.topControlGroup]}>
@@ -355,35 +379,40 @@ export default class VideoPlayer extends Component {
 
     renderBottomControls() {
         return (
-            <Animated.View style={[
-                styles.controls.bottom,
-                {
-                    opacity: this.animations.bottomControl.opacity,
-                    marginBottom: this.animations.bottomControl.marginBottom,
-                },
-            ]}>
-                <View style={[
-                    styles.controls.row,
-                    styles.controls.control,
-                    styles.controls.bottomControlGroup,
-                ]}>
-                    <TouchableOpacity
-                        style={[styles.controls.column, styles.controls.playPauseButton]}
-                        onPress={() => this.onPlayPause()}>
-                        <Icon name={this.state.isPlaying ? 'ios-pause' : 'ios-play'} size={24} color={'#ffff'}/>
-                    </TouchableOpacity>
+            <SafeAreaConsumer>
+                {insets => (
+                    <Animated.View style={[
+                        styles.controls.bottom,
+                        {
+                            opacity: this.animations.bottomControl.opacity,
+                            marginBottom: this.animations.bottomControl.marginBottom,
+                            paddingBottom: (this.state.orientation === 'PORTRAIT' ? insets.bottom : 10),
+                        },
+                    ]}>
+                        <View style={[
+                            styles.controls.row,
+                            styles.controls.control,
+                            styles.controls.bottomControlGroup,
+                        ]}>
+                            <TouchableOpacity
+                                style={[styles.controls.column, styles.controls.playPauseButton]}
+                                onPress={() => this.onPlayPause()}>
+                                <Icon name={this.state.isPlaying ? 'ios-pause' : 'ios-play'} size={24} color={'#ffff'}/>
+                            </TouchableOpacity>
 
-                    <View style={[styles.controls.column, styles.flex1]}>
-                        { this.renderSeekBar() }
-                    </View>
+                            <View style={[styles.controls.column, styles.flex1]}>
+                                { this.renderSeekBar() }
+                            </View>
 
-                    <View style={[styles.controls.column]}>
-                        <Text style={ styles.controls.text }>
-                            { this.calculateTime() }
-                        </Text>
-                    </View>
-                </View>
-            </Animated.View>
+                            <View style={[styles.controls.column]}>
+                                <Text style={ styles.controls.text }>
+                                    { this.calculateTime() }
+                                </Text>
+                            </View>
+                        </View>
+                    </Animated.View>
+                )}
+            </SafeAreaConsumer>
         );
     }
 
@@ -423,7 +452,7 @@ export default class VideoPlayer extends Component {
 
     render() {
         return (
-            <SafeAreaView style={styles.container} forceInset={{ bottom: 'always', top: 'never' }}>
+            <View style={styles.container} forceInset={{ bottom: 'always', top: 'never' }}>
                 <TouchableWithoutFeedback
                     onPress={() => {
                         const now = Date.now();
@@ -450,7 +479,7 @@ export default class VideoPlayer extends Component {
                             style={{
                                 ...styles.player.video,
                                 ...this.props.style,
-                                ...{width: this.props.width, height: this.props.height}
+                                ...{ width: this.props.width, height: this.props.height },
                             }}
                             ref={(ref) => { this.player.ref = ref; }}
                             fullscreen={false}
@@ -478,7 +507,7 @@ export default class VideoPlayer extends Component {
                         {this.renderBottomControls()}
                     </View>
                 </TouchableWithoutFeedback>
-            </SafeAreaView>
+            </View>
         );
     }
 }
@@ -547,6 +576,11 @@ const styles = {
             paddingRight: 15,
             paddingTop: 4,
         },
+        playPauseButton: {
+            // backgroundColor: 'red',
+            paddingLeft: 12,
+            paddingRight: 5,
+        },
         row: {
             flexDirection: 'row',
             alignItems: 'center',
@@ -580,11 +614,6 @@ const styles = {
             backgroundColor: '#fff',
             borderRadius: 10,
             height: 6,
-        },
-        playPauseButton: {
-            // backgroundColor: 'red',
-            paddingLeft: 12,
-            paddingRight: 5,
         },
         text: {
             backgroundColor: 'transparent',
